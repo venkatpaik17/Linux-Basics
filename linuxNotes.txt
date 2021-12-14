@@ -1,0 +1,157 @@
+Linux console terminal - tty, ctrl+alt+f1/f2/f3/f4/f5/f6/f7, f1/f7/f8 tp reach GUI
+to set text size: gsettings set org.gnome.desktop.interface text-scaling-factor 1.1 
+/etc/passwd: file contains a list of all the system user accounts, along with basic configuration information about each user
+search commands based on keyword: man -k keyword
+get info about man page sections: man 1 intro, man 2 intro etc
+Filesystem structure and details
+Navigation:
+	pwd
+	cd
+	ls
+Files:	
+	touch
+	cp
+	mv
+	rm
+Directories:
+	mkdir
+	rmdir
+	rm
+Viewing File contents:
+	file
+	cat
+	more
+	less
+	head
+	tail
+	
+Sudo:
+su - : superuser access 
+su - username: switch user
+sudo: admin priviliges
+sudoers: sudo config file
+visudo: editor for sudoers
+sudo -k: logout of sudo session
+sudo -i: log into root user
+whoami: display username of current user
+sudo passwd username: change password of the user
+sudo passwd -l root: deletes the passwd for root user, basically disables root
+sudo adduser name: create a new user account
+	whenever a new user is created, sudo is not provided, we need to add that user into sudoers file
+	
+Users, groups and permissions:	
+adduser
+sudo useradd -g Group -G groupnames username: create a new user and assign groups (Group is primary group and groupnames are secondary )
+groups: lists groups in which current user is present
+usermod: to modify attributes/properties of a created user ($ usermod options groups username -> existing user and groups only)
+usermod -aG sudo user1: appending user1 to sudo group
+sudo cat /etc/group: list of all groups
+getent group: same
+vipw: used to update /etc/passwd
+groupadd: create new groups
+vigr: used to update /etc/group
+primary group: Login process, files/directories are associated with primary group named after user itself by default. Other groups of which the user is part of are secondary groups
+id -gn: to know the primary group (id command: Print user and group information for each specified USER, or for the current user)
+sudo usermod -g groupname username: changing user's primary group
+userdel username: delete user
+groupdel groupname: delete group	
+deluser username groupname: remove user from group
+
+chmod: modify permissions
+	chmod u,g,o,a -> user group others all
+	chmod +,-,= -> operators to add, remove, exact permission
+		Ex:chmod u+x,o-r file
+		   chmod g=x file
+	chmod 700 file -> user has rwx, group and others dont have any, very frequent usage
+	r-- is 4, -w- is 2, --x is 1 -> using these we can derive others
+	
+When you change the permission of directory, the permissions of files/directories inside this directory will be unchanged. To make this happen use -R option
+
+chown: change owner of a file
+	chown new_owner filename/directoryname
+chgrp: change group of a file
+	chgrp new_group filename/directoryname
+	For directory, it is not recursive, so to make it happen use -R option
+	
+Compression and backups:
+gzip: gzip filename -> compress
+	gzip -d compressed_filename OR gunzip compressed_filename -> decompress
+	gzip -c : copy and then compress, preserves original
+	
+	less file.gz OR zcat file.gz : read the compressed file
+	gzip -[1-9] filename: compression quality and time, 1 -> fast but less compressed, 9-> very slow but highly compressed
+	
+bzip2: similar to gzip, uses bzcat for reading
+
+tar: for archiving multiple files as a single file
+	tar pcxzjtvf tar_filename directory -> p preserve permissions, c create, x extract, z gzip compress, t view contents, v verbose, f include file, j bzip2 compress
+	
+
+Pipes and Redirection:
+stdin 0, stdout 1, stderr 2
+echo 'hello' 1> filename OR by default echo 'hello' > filename
+cat kslnd 2> error
+
+./demoscript.sh > dsout 2> dserr: stdout goes to dsout and stderr to dserr
+
+./demoscript.sh > combinedouterr 2>&1: both stdout and stderr go to same file combinedouterr
+
+> : stdout overrride the file or create a new file and put it.
+>> : stdout append the existing file
+
+Cron jobs:
+crontab -l : list cron jobs
+crontab -e
+
+***** command : min(0-59), hour(0-23), day of month(1-31), month(1-12), weekday (0-6) sunday-saturday
+examples:
+	* * * * * command : every minute
+	30 2 3 11 * command: 2:30 am on 3rd Nov
+	30 10 * * 0 command: 10:30 am every sunday
+	0 2 * * * command: 2:00 am every day
+	*/5 * * * * command: every 5 minutes
+	0 */3 * * * command: every 3 hours
+	0 0 1 */3 * command: midnight on 1st every 3 months
+	0 0 1 JAN,APR,JUL,OCT command: midnight on 1 st of JAN, APR, JUL, OCT
+	5 13 * * 6,0 command: 13:05 pm saturday sunday every week every month
+	
+Every user has his own crontab file
+sudo crontab -e : root crontab file, to be used when commands need root priveleges
+
+Managing Processes:
+
+Process - Parent and child. Process ID - PID, based of which kernel manages process
+ctrl+c - SIGINT to the process and stop the process, get out of process
+ctrl+z - SIGSTOP to suspend the process, process is still alive but stopped temporarily, gets a JOBID
+jobs - get list of jobs
+fg jobid - bring back stopped process to foreground using jobid
+bg jobid - bring back stopped process to background using jobid, & represents background
+
+command & - creates process in background
+
+Process states -
+R – RUNNING/RUNNABLE
+S – INTERRRUPTABLE_SLEEP
+D – UNINTERRUPTABLE_SLEEP
+T – STOPPED
+Z – ZOMBIE
+
+ps - list processes, just ps will give processes specific to the user
+ps -U username: processes specific to username
+ps -aef: e all processes, f full format
+
+top: monitor processes, real time, sorts based on CPU utilization, can sort by any parameter
+
+Signals - using kill command to send signals to processes
+kill -l - list of signals
+
+prep processname - to get process id of a process, gives pids of parent processes
+pidof processname - to get process id of both parent and child processes
+pkill processname - kill a process using processname, if there are multiple processes with same names, then this will kill all of them. Hence it is tricky to use
+
+Process priority:
+Niceness - this determines a process's priority, -20 to +19, default niceness is 0, higher niceness means lower execution priority.
+High priority is -20, low priority +19
+ps -el : to get niceness
+nice : execution of a program/process with modified scheduling priority. It launches a process with a user-defined scheduling priority
+renice: alters the scheduling priority of one or more running processes
