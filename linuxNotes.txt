@@ -149,9 +149,42 @@ prep processname - to get process id of a process, gives pids of parent processe
 pidof processname - to get process id of both parent and child processes
 pkill processname - kill a process using processname, if there are multiple processes with same names, then this will kill all of them. Hence it is tricky to use
 
-Process priority:
+Process priority-
 Niceness - this determines a process's priority, -20 to +19, default niceness is 0, higher niceness means lower execution priority.
 High priority is -20, low priority +19
 ps -el : to get niceness
 nice : execution of a program/process with modified scheduling priority. It launches a process with a user-defined scheduling priority
 renice: alters the scheduling priority of one or more running processes
+
+
+
+Top-
+basic details: time, how long system is up and running, no of users, load average 1min-5min-15min
+Tasks: no of tasks, process states of those tasks
+%Cpu(s): 
+    us: Amount of time the CPU spends executing processes for people in “user space.”
+    sy: Amount of time spent running system “kernel space” processes.
+    ni: Amount of time spent executing processes with a manually set nice value.
+    id: Amount of CPU idle time.
+    wa: Amount of time the CPU spends waiting for I/O to complete.
+    hi: Amount of time spent servicing hardware interrupts.
+    si: Amount of time spent servicing software interrupts.
+    st: Amount of time lost due to running virtual machines (“steal time”).
+MiB Mem: total amount (in Mebibytes) of physical memory, and how much is free, used, and buffered or cached
+MiB swap:total amount (also in Mebibytes) of swap memory, and how much is free, used, and available 
+
+Contents-
+    PID: Process ID.
+    USER: The owner of the process.
+    PR: Process priority.
+    NI: The nice value of the process.
+    VIRT: Amount of virtual memory used by the process.
+    RES: Amount of resident memory used by the process.
+    SHR: Amount of shared memory used by the process.
+    S: Status of the process. (See the list below for the values this field can take).
+    %CPU: The share of CPU time used by the process since the last update.
+    %MEM: The share of physical memory used.
+    TIME+: Total CPU time used by the task in hundredths of a second.
+    COMMAND: The command name or command line (name + options).
+    
+Customization - u for list user specific process, e for process memory units change, E for dashboard memory unit change, 1 for individual CPU times, t for swaping CPU time displays, m for swapping memory displays, y to highlight running tasks in the process list, x highlights the column used to sort the process list, P for sorting processes based on %CPU column, M for %MEM column, N for PID column, T for TIME+ column, c toggles the COMMAND column between displaying the process name and the full command line, r for renicing a process, W for Save your settings and customizations so they’ll still be in effect when you next start top, F to enter the Fields Management screen
