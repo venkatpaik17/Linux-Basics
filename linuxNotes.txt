@@ -281,3 +281,100 @@ sudo apt update
 
 OR
 sudo add-apt-repository 'deb repopath versioncode repotype(s)'
+
+
+Networking:
+ip add or ip addr or ip addr show or ip address show or ip a : list different interfaces their IP, MAC and IPv6 address
+The first IP address is the (internal) loopback address used to communicate within the computer. The second is the actual (external) IP address the computer has on the local area network (LAN).
+Loopback:
+     lo: The network interface name as a string.
+    <LOOPBACK,UP,LOWER_UP>: This is a loopback interface. It’s UP, meaning it’s operational. The physical networking layer (layer one) is also up.
+    mtu 65536: The maximum transfer unit. This is the size of the largest chunk of data this interface can transmit.
+    qdisc noqueue: A qdisc is a queuing mechanism. It schedules the transmission of packets. There are different queuing techniques called disciplines. The noqueue discipline     
+    means “send instantly, don’t queue.” This is the default qdisc discipline for virtual devices, such as the loopback address.
+    state UNKNOWN: This can be DOWN (the network interface is not operational), UNKNOWN (the network interface is operational but nothing is connected), or UP (the network is
+    operational and there is a connection).
+    group default: Interfaces can be grouped logically. The default is to place them all in a group called “default.”
+    qlen 1000: The maximum length of the transmission queue.
+    link/loopback: The media access control (MAC) address of the interface.
+    inet 127.0.0.1/8: The IP version 4 address. The part of the address after the forward-slash (/) is Classless Inter-Domain Routing notation (CIDR) representing the subnet
+    mask. It indicates how many leading contiguous bits are set to one in the subnet mask. The value of eight means eight bits. Eight bits set to one represents 255 in binary, so
+    the subnet mask is 255.0.0.0.
+    scope host: The IP address scope. This IP address is only valid inside the computer (the “host”).
+    lo: The interface with which this IP address is associated.
+    valid_lft: Valid lifetime. For an IP version 4 IP address allocated by Dynamic Host Configuration Protocol (DHCP), this is the length of time the IP address is considered
+    valid and able to make and accept connection requests.
+    preferred_lft: Preferred lifetime. For an IP version 4 IP address allocated by DHCP, this is the amount of time the IP address can be used with no restrictions. This should
+    never be larger than the valid_lft value.
+    inet6: The IP version 6 address, scope , valid_lft, and preferred_lft.
+
+Physical interface:
+    enp0s3: The network interface name as a string. The “en” stands for ethernet, “p0” is the bus number of the ethernet card, and “s3” is the slot number.
+    <BROADCAST,MULTICAST,UP,LOWER_UP>: This interface supports broad- and multicasting, and the interface is UP (operational and connected). The hardware layer of the network
+    (layer one) is also UP.
+    mtu 1500: The maximum transfer unit this interface supports.
+    qdisc fq_codel: The scheduler is using a discipline called “Fair Queuing, Controlled Delay.” It’s designed to provide a fair share of the bandwidth to all the traffic flows
+    that use the queue.
+    state UP: The interface is operational and connected.
+    group default: This interface is in the “default” interface group.
+    qlen 1000: The maximum length of the transmission queue.
+    link/ether: The MAC address of the interface.
+    inet 192.168.4.26/24: The IP version 4 address. The “/24” tells us there are 24 contiguous leading bits set to one in the subnet mask. That’s three groups of eight bits. An
+    eight-bit binary number equates to 255; therefore, the subnet mask is 255.255.255.0.
+    brd 192.168.4.255: The broadcast address for this subnet.
+    scope global: The IP address is valid everywhere on this network.
+    dynamic: The IP address is lost when the interface goes down.
+    noprefixroute: Do not create a route in the route table when this IP address is added. Someone has to add a route manually if he wants to use one with this IP address.
+    Likewise, if this IP address is deleted, don’t look for a route to delete.
+    enp0s3: The interface with which this IP address is associated.
+    valid_lft: Valid lifetime. The time the IP address will be considered valid; 86,240 seconds is 23 hours and 57 minutes.
+    preferred_lft: Preferred lifetime. The time the IP address will operate without any restrictions.
+    inet6: The IP version 6 address, scope, valid_lft, and preferred_lft.
+    
+
+/etc/netplan : Netplan is a new command-line network configuration utility, configure a network interface using YAML abstraction, works in conjunction with the NetworkManager and systemd-networkd networking daemons as interfaces to the kernel, *.yaml files
+sudo netplan apply : to apply the changes made in network config yaml file
+
+ip addr show dev interfacename : show details about specific interface, use -4 for ipv4, -6 for ipv6
+ip link show : lists all the interfaces installed on the system
+sudo ip link set interfacename up/down: start/stop a network interface
+
+ip route: see the kernel routing table
+first route:    
+    default: The default rule. This route is used if none of the other rules match what’s being sent.
+    via 192.168.4.1: Routes the packets via the device at 192.168.4.1. This is the IP address of the default router on this network.
+    dev enp0s3: Use this network interface to send the packets to the router.
+    proto dhcp: The routing protocol identifier. DHCP means the routes will be determined dynamically.
+    metric 100: An indication of the preference of the route compared to others. Routes with lower metrics are preferentially used over those with higher metrics. You can use
+    this to give preference to a wired network interface over a Wi-Fi one
+
+second route: governs traffic to the IP range of 169.254.0.0/16. This is a zero-configuration network, which means it tries to self-configure for intranet communication
+    169.254.0.0/16: The range of IP addresses this routing rule governs. If the computer communicates on this IP range, this rule cuts in.
+    dev enp0s3: The network interface the traffic governed by this route will use.
+    scope link: The scope is link, which means the scope is limited to the network to which this computer is directly connected.
+    metric 1000: This is a high metric and isn’t a preferred route.
+    
+third route: The third route governs traffic to the IP address range of 192.168.4.0/24. This is the IP address range of the local network to which this computer is connected. It’s for communication across, but within, that network.
+    192.168.4.1/24: The range of IP addresses this routing rule governs. If the computer communicates within this IP range, this rule triggers and controls the packet routing.
+    dev enp0s3: The interface through which this route will send packets.
+    proto kernel: The route created by the kernel during auto-configuration.
+    scope link: The scope is link, which means the scope is limited to the immediate network to which this computer is connected.
+    src 192.168.4.26: The IP address from which packets sent by this route originate.
+    metric 100: This low metric indicates a preferred route.
+    
+ARP: IP to MAC binding
+ip neigh : shows the ARP entries
+192.168.0.1 - Ip address of neighbour
+dev wlo1 - network interface 
+lladdr c0:06:c3:78:e6:a0 - link layer address i.e MAC address
+REACHABLE - state of the neighbour, it can be stale, none, noarp, permanent, delay, incomplete, failed, probe.
+    
+fe80::c206:c3ff:fe78:e6a0 dev wlo1 lladdr c0:06:c3:78:e6:a0 router REACHABLE -ipv6 version
+
+ping command : to check the network connection to a device, send ICMP packets
+nslookup : resolve a hostname
+tcpdump : packet capture
+traceroute/tracepath
+
+	
+
