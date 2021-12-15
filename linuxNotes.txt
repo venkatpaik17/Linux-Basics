@@ -187,4 +187,97 @@ Contents-
     TIME+: Total CPU time used by the task in hundredths of a second.
     COMMAND: The command name or command line (name + options).
     
-Customization - u for list user specific process, e for process memory units change, E for dashboard memory unit change, 1 for individual CPU times, t for swaping CPU time displays, m for swapping memory displays, y to highlight running tasks in the process list, x highlights the column used to sort the process list, P for sorting processes based on %CPU column, M for %MEM column, N for PID column, T for TIME+ column, c toggles the COMMAND column between displaying the process name and the full command line, r for renicing a process, W for Save your settings and customizations so they’ll still be in effect when you next start top, F to enter the Fields Management screen
+Customization - u for list user specific process, e for process memory units change, E for dashboard memory unit change, 1 for individual CPU times, t for swaping CPU time displays, m for swapping memory displays, y to highlight running tasks in the process list, x highlights the column used to sort the process list, P for sorting processes based on %CPU column, M for %MEM column, N for PID column, T for TIME+ column, c toggles the COMMAND column between displaying the process name and the full command line, r for renicing a process, W for Save your settings and customizations so they’ll still be in effect when you next start top, F to enter the Fields Management screen.
+
+
+
+Package Management:
+Package is a group of files which constitute an application. Consists of install scripts, config files, library files and documentation.
+Package may have a dependency meaning there are some files/packages which are needed for a package to install and run successfully.
+Package manager handles installation and dependencies. 
+Repository is a digital library for storing software packages.
+
+dpkg - install, query and remove packages (not the best way to do it)
+dpkg -l : list all the installed packages
+dpkg -p packagename : details of the specific package
+dpkg -s packagename : to check whether that specific package is installed or not, basically gives the status
+
+All ubuntu packages are with .deb extension
+
+dpkg --print-architecture : gives the system architecture
+wget link : download files off the internet
+dpkg --info packagename.deb : gives information about that package
+sudo dpkg -i packagename.deb : install the package
+sudo dpkg -r packagename : remove package, keep config files
+sudo dpkg -P packagename : remove package and config files, erase all traces
+
+Example for why dpkg isn't good
+get the apache deb
+sudo dpkg -i apachedeb - errors, dependency problems
+dpkg doesn't focus on dependencies, no automatic fix
+
+Built-in package management system apt-get
+apt-get will handle package installation, removal and changes along with dependencies on a debian based linux distribution
+
+apt-get uses dpkg under the hood along with other tools
+newer versions use only apt (-get is removed)
+apt-get update : downloads the list of all packages of all the repos configured in the /etc/apt/sources.list. basically checks for the updates.
+apt update --fix-missing 
+apt-get upgrade : look at all the local installed packages and fetches the newer versions of the packages if any updates are available. Used to update installed applications. apt update will update the databases and upgrade will get to know about the updates.
+
+-y parameter : yes to avoid prompt
+
+apt-get install <packagename1>... : install packages
+sudo apt install -f : Force the package manager to find any missing dependencies or broken packages and install. when dpkg is used for installation
+sudo apt install <packagename> --no-upgrade : install package without upgrading
+sudo apt install <packagename> --only-upgrade : only upgrade a package but don't want to install it.
+sudo apt install <packagename>=<versionnumber> : Install a specific version
+apt-cache policy <packagename> :  available versions for specific package
+apt --fix-broken install : fix broken installation
+
+sudo apt remove <packagename> : remove installed packages
+sudo apt purge <packagename> : another way of removing packages
+
+apt remove just removes the binaries of a package. It leaves residue configuration files.
+apt purge removes everything related to a package including the configuration files.
+
+If we use apt remove to remove a software and later install it again, the software will have same config files. But can be overridden during installation.
+
+Purge is useful to completely erase all the traces from the system. Basically useful when configuration is messed up. Also can use oapt purge on already removed packages.
+
+sudo apt autoremove : Removes libs and packages that were installed automatically as dependencies of an installed package, so when package is removed these automatically installed packages which are basically useless remains in the system.
+
+sudo apt --purge autoremove : same as above and also removes configuration files of those dependencies
+
+apt search <searchterm> : finds all packages containing the search term
+apt-cache search package : command-line tool used for searching apt packages on a Ubuntu or Debian based systems
+apt show <packagename> : Show info about packages, like dependencies, installation, size, sources, desc etc
+apt-cache show packagename : detailed info about specific package
+apt list --upgradable : Shows all packages that have a newer version ready to be upgraded
+apt list --installed : Shows all installed packages on the system
+apt list --all-versions : Lists all the packages available for the system
+
+Repositories in ubuntu are divided into main, universe, multiverse, restricted and partner
+main - repo enabled by default, consists of FOSS softwares, fully supported by ubuntu developers
+universe - FOSS, ubuntu doesn't guarantee security updates, managed by community, vast amount of softwares
+multiverse - Not FOSS, licensing, not enabled by default and cannot provide fixes and updates by ubuntu.
+restricted - properitary drivers for devices
+partners - properitary softwares packaged by ubuntu for patners
+
+Configure a new repo-
+cd /etc/apt
+vim sources.list
+
+deb repolocation versioncode repotype(s)
+ex: deb https:us.archive.ubuntu.com/ bionic main restricted
+
+deb -> binary packages with apt
+deb-src ->  source packages for compiling, look at source codes, primary use for developers
+
+OR 
+go to sources.list.d
+create a file -> filename.list and add your repos
+sudo apt update
+
+OR
+sudo add-apt-repository 'deb repopath versioncode repotype(s)'
