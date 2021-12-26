@@ -4,7 +4,7 @@ to set text size: gsettings set org.gnome.desktop.interface text-scaling-factor 
 search commands based on keyword: man -k keyword
 get info about man page sections: man 1 intro, man 2 intro etc
 Filesystem structure and details
-Navigation:
+Navigation: rev 
 	pwd
 	cd
 	ls
@@ -24,6 +24,53 @@ Viewing File contents:
 	less
 	head
 	tail
+
+find command:
+find . : finds all files and directories in the current directory
+find directoryname
+find directoryname -type d (directories), type -f (files)
+find directoryname -name filename (based on name), -iname (case insensitive)
+		    -mmin +/-num (modified minutes, + means greater than, - means less
+		     than) -> -mmin -10, -mmin +10, -mmin +1 -mmin -5
+		    -mtime +/-num (modified days) -> -mtime +20
+		    -amin and -atime (access minutes and access days)
+		    -cmin and -ctime (changed minutes and changed days)
+		    m -> modified file's data
+		    c -> changed content or metadata(permissions, owner etc)
+		    -mtime, -ctime and -atime can be used in general with +/-nh/m/d
+		    (modern find)
+		    
+		    -size +/-nM/k/G, -size +5M
+		    -empty (check empty files)
+		    -perm xyz (find files with xyz)
+		    -exec (execute operations with find results)
+		    	find . -exec echo "name is " {} \; -> name is  .
+								name is  ./2
+								name is  ./3
+								name is  ./1
+
+		    	find . -exec echo "name is " {} + -> name is  . ./2 ./3 ./1
+		    	'+' sign activates the ability of find to combine the results of the 
+		    	search into an argument list for a single execution of the desired command
+                   -delete (delete)
+                   -maxdepth n (search files down n directories)
+		      
+grep command:
+global regular expression print
+grep "matchtext" filename
+	-w (exact match)
+	-i (case insensitive)
+	-n (line number)
+	-B n (n lines before the match)
+	-A n (n lines after the match)
+	-C n (n lines of context for the match)
+	-r (recursive search)
+	-l (return files with matches, not the matches)
+	-c (no. of matches in the files)
+	-P (perl compatible regex)
+	-E (extended regex)
+
+regex: https://github.com/CoreyMSchafer/code_snippets/tree/master/Regular-Expressions
 	
 Sudo:
 su - : superuser access 
@@ -40,7 +87,7 @@ sudo adduser name: create a new user account
 	whenever a new user is created, sudo is not provided, we need to add that user into sudoers file
 	
 Users, groups and permissions:	
-adduser
+adduser (bcrypt, w.r.t scripts)
 sudo useradd -g Group -G groupnames username: create a new user and assign groups (Group is primary group and groupnames are secondary )
 groups: lists groups in which current user is present
 usermod: to modify attributes/properties of a created user ($ usermod options groups username -> existing user and groups only)
@@ -73,6 +120,9 @@ chgrp: change group of a file
 	chgrp new_group filename/directoryname
 	For directory, it is not recursive, so to make it happen use -R option
 	
+chown owner:group directory/file	
+
+
 Compression and backups:
 gzip: gzip filename -> compress
 	gzip -d compressed_filename OR gunzip compressed_filename -> decompress
@@ -118,6 +168,8 @@ examples:
 Every user has his own crontab file
 sudo crontab -e : root crontab file, to be used when commands need root priveleges
 
+@reboot
+
 Managing Processes:
 
 Process - Parent and child. Process ID - PID, based of which kernel manages process
@@ -139,6 +191,7 @@ Z – ZOMBIE
 ps - list processes, just ps will give processes specific to the user
 ps -U username: processes specific to username
 ps -aef: e all processes, f full format
+ps aux: shows all process BSD style
 
 top: monitor processes, real time, sorts based on CPU utilization, can sort by any parameter
 
@@ -156,9 +209,9 @@ ps -el : to get niceness
 nice : execution of a program/process with modified scheduling priority. It launches a process with a user-defined scheduling priority
 renice: alters the scheduling priority of one or more running processes
 
+sar, turbostat
 
-
-Top-
+Top- htop
 basic details: time, how long system is up and running, no of users, load average 1min-5min-15min
 Tasks: no of tasks, process states of those tasks
 %Cpu(s): 
@@ -202,6 +255,8 @@ dpkg -l : list all the installed packages
 dpkg -p packagename : details of the specific package
 dpkg -s packagename : to check whether that specific package is installed or not, basically gives the status
 
+
+
 All ubuntu packages are with .deb extension
 
 dpkg --print-architecture : gives the system architecture
@@ -210,6 +265,8 @@ dpkg --info packagename.deb : gives information about that package
 sudo dpkg -i packagename.deb : install the package
 sudo dpkg -r packagename : remove package, keep config files
 sudo dpkg -P packagename : remove package and config files, erase all traces
+
+specfile of a package
 
 Example for why dpkg isn't good
 get the apache deb
@@ -377,4 +434,7 @@ tcpdump : packet capture
 traceroute/tracepath
 
 	
+Common directories used in Linux:
+https://www.tecmint.com/linux-directory-structure-and-important-files-paths-explained/
+
 
