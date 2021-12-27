@@ -71,7 +71,18 @@ grep "matchtext" filename
 	-E (extended regex)
 
 regex: https://github.com/CoreyMSchafer/code_snippets/tree/master/Regular-Expressions
-	
+
+cURL:
+The curl command allows us to query URLs from the command line. Not only can we make regular requests, but we can POST data, authenticate users, save responses to files, and many other useful actions.
+
+curl http://abc.com -> gets HTML response, we can get a json response for rest apis testing
+curl -i: info about response header
+     -d: simulate submitting form data, HTTP POST request
+     -X: request <command>, PUT, DELETE etc
+     -u: user <user:password>
+     -o: output <file>
+     
+
 Sudo:
 su - : superuser access 
 su - username: switch user
@@ -152,6 +163,9 @@ cat kslnd 2> error
 Cron jobs:
 crontab -l : list cron jobs
 crontab -e
+crontab -u username : edit user's crontab
+crontab -r: removes crontab
+
 
 ***** command : min(0-59), hour(0-23), day of month(1-31), month(1-12), weekday (0-6) sunday-saturday
 examples:
@@ -162,13 +176,18 @@ examples:
 	*/5 * * * * command: every 5 minutes
 	0 */3 * * * command: every 3 hours
 	0 0 1 */3 * command: midnight on 1st every 3 months
-	0 0 1 JAN,APR,JUL,OCT command: midnight on 1 st of JAN, APR, JUL, OCT
+	0 0 1 JAN,APR,JUL,OCT * command: midnight on 1 st of JAN, APR, JUL, OCT
 	5 13 * * 6,0 command: 13:05 pm saturday sunday every week every month
+	0 9-17 * * * command: At minute 0 past every hour from 9 through 17
+	0 1 * 1-5 * command: At 01:00 in every month from January through May 
+	
+	https://crontab.guru/hour-range
 	
 Every user has his own crontab file
 sudo crontab -e : root crontab file, to be used when commands need root priveleges
 
 @reboot
+
 
 Managing Processes:
 
@@ -437,4 +456,13 @@ traceroute/tracepath
 Common directories used in Linux:
 https://www.tecmint.com/linux-directory-structure-and-important-files-paths-explained/
 
-
+rsync:
+The rsync command will allow you to sync file and directories on your local machine or even over a network between servers. This is a great tool for running back ups, for only copying diffs, or even for deploying segments of code.
+rsync source destination
+rsync -r source/ dest/ : recursive sync, if / is not there then directory will be synced and folder is created again within the original sync folder
+      -a: archive, preserves the symlinks, permisions, groups, owners, times etc
+      -n or --dry-run: perform dry run for checking
+      -v: verbose, use it along with other options like -n etc
+      --delete: delete things which are in backup but not in original
+      -z: compress
+      -P: show progress
